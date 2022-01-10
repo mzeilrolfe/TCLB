@@ -1,3 +1,4 @@
+#Line 80: Incorrectly Added Option -------------------------------------------------------IMPORTANT
 # 	Density - table of variables of LB Node to stream
 #	Pressure Evolution:
 AddDensity( name="g[0]", dx= 0, dy= 0, group="g")
@@ -75,6 +76,8 @@ if (Options$RT) {
 	AddStage("BaseIter"  , "calcHydroIter" 		, save=Fields$group %in% c("g","h","Vel")		, load=DensityAll$group %in% c("g","h","Vel"))
     AddStage("PhaseIter" , "calcPhaseFIter"		, save=Fields$name  %in% c("PhaseF","PhaseOld") , load=DensityAll$group=="h")
   	AddStage("WallIter"  , "calcWallPhaseIter"  , save=Fields$group %in% c("PF")				, load=DensityAll$group=="nw") 
+} else if (Options$Thermo) {
+	AddStage("", save=Fields$group %in% c("f"))	#Learn Options, Stages & Actions so this can be properly added
 } else if (Options$Outflow) {
 
 	# initialisation

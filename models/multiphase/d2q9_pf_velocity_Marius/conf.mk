@@ -1,6 +1,6 @@
 ADJOINT=0
 TEST=FALSE
-OPT="(GF+RT+Outflow+GuoCM+debug+BGK+CM)*autosym"
+OPT="(GF+RT+Outflow+GuoCM+debug+BGK+CM+Thermo)*autosym"
 
 # GF: Guo Forcing - feature in MRT model;
 #	This is using a higher order Forcing scheme
@@ -20,3 +20,6 @@ OPT="(GF+RT+Outflow+GuoCM+debug+BGK+CM)*autosym"
 # 	so results in a slower code.
 # autosym:
 # 	Allows symmetry node type flags introduced in v6.2
+# Thermo:
+#	Introduced by Marius for Thesis, Couples hydrodynamic 
+#	forces through temp dependent surface tension

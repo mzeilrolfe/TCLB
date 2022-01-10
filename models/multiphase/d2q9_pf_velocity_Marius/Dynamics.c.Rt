@@ -47,9 +47,10 @@
 // Marius's Updates to code
 // 		7/12/2021: 	Defined temperature fields, Added Temperature to most boundary conditions. 
 //		20/12/2021: 	Added Bouyancy force, feq[i], S[i] and f[i] update into BGK Collision Operator
-//				Added f[i] to the initial distributions #Do I need to add another Initialisation section? 
-//				Added temperature to CollisionMRT(). #Confirm no action needed in referenced MRT functions.
+//				Added f[i] to the initial distributions - Do I need to add another Initialisation section? 
+//				Added temperature to CollisionMRT(). -Confirm no action needed in referenced MRT functions.
 //				Added temperature to CollisionCM() - very basically at the end
+//		10/01/2022:	Fixed incorrect comment notation
 //-------------------------------------------------------------------------------------------------------------------------------
 //				TO DO LIST - MARIUS
 //	-PRIORITY: Forces for f,g & h are different? I have used the same force as g for f. Check...
