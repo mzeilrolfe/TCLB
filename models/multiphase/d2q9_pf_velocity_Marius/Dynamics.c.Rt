@@ -75,13 +75,13 @@
 // 6.		Boundary Conditions				lines: 1248-1580
 //-------------------------------------------------------------------------------------------------------------------------------
 
-#include <math.h>
-#define PI 3.1415926535897
+//include <math.h>
+//define PI 3.1415926535897
 
 <?R
-g = PV(Density$name[Density$group == "g"]) #Pressure
-h = PV(Density$name[Density$group == "h"]) #Phase
-f = PV(Density$name[Density$group == "f"]) #Temperature
+g = PV(Density$name[Density$group == "g"]) //Pressure
+h = PV(Density$name[Density$group == "h"]) //Phase
+f = PV(Density$name[Density$group == "f"]) //Temperature
 
 if (Options$Outflow){
 	g_neighbours = Density$nicename[Density$group == "g"]
@@ -103,7 +103,7 @@ if (Options$Outflow){
 //--------------------------------------------------------------------------------------------------------------------------------
 //	EXPORTABLE QUANTITIES:
 
-#Added Temperature Quantities
+//Added Temperature Quantities
 CudaDeviceFunction real_t getT(){
 	real_t T;
 	real_t rho = getRho();
@@ -114,7 +114,7 @@ CudaDeviceFunction real_t getT(){
 
 
 
-# Original Quantities
+// Original Quantities
 CudaDeviceFunction real_t getRho(){
 	real_t rho;
 	rho = Density_l + (Density_h-Density_l) * (PhaseF(0,0) - PhaseField_l)/(PhaseField_h - PhaseField_l);
@@ -1027,10 +1027,10 @@ CudaDeviceFunction void calcWallPhaseIter(){
 			g[i] = g[i]-(g[i]-(geq[i]-0.5*F_i[i]))/tau+F_i[i];
 		}
 		//TEMPERATURE EVOLUTION UPDATE:
-		#Need to confirm this method is correct
-		#Need to confirm that my method of S[i] definition is correct as heat-tut did not run correctly
-		#Define BoussinesqCoeff, omega_k in xml file
-		SetEquilibrium(feq[9],rho*T,U,V) #create feq[9] 
+		//Need to confirm this method is correct
+		//Need to confirm that my method of S[i] definition is correct as heat-tut did not run correctly
+		//Define BoussinesqCoeff, omega_k in xml file
+		SetEquilibrium(feq[9],rho*T,U,V) //create feq[9] 
 		for (i=0; i< 9; i++){
 			S[i] = (1-omega_k/2)*f[i]*(sqrt(F_total[0]*F_total[0]+F_total[1]*F_total[1]))*(sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i])-(sqrt(U*U+V*V)))/(rho)*9.;
 			f[i]=f[i]-omega_k*(f[i]-feq[i])+S[i];	//collision
@@ -1237,10 +1237,10 @@ CudaDeviceFunction void CollisionMRT(){
 	}
 	//TEMPERATURE EVOLUTION UPDATE:
 	
-	//Not For Extended Forcing Scheme #What is extended Forcing Scheme??
+	//Not For Extended Forcing Scheme //What is extended Forcing Scheme??
 	for (int i=0; i<9; i++){
 		R[i] = f[i]-feq[i]
-	relaxMRT(R,1./omega_k); #replaced tau with 1/omega_k for temperature relaxation
+	relaxMRT(R,1./omega_k); //replaced tau with 1/omega_k for temperature relaxation
 	
 	
 	//Collision
@@ -1488,7 +1488,7 @@ CudaDeviceFunction void MovingWall_S_Dirichlet(){
 	h[5] = h[7];
 	h[6] = h[8];
 	
-	#Added Temperature Boundary Condition. Confirm no added conditions.
+	//Added Temperature Boundary Condition. Confirm no added conditions.
 	f[2] = f[4];
 	f[5] = f[7];
 	f[6] = f[8];
@@ -1566,7 +1566,7 @@ CudaDeviceFunction void BounceBack()
 	h[8] = tmp;
 	
 	
-	#Added Temperature Bounce Back
+	//Added Temperature Bounce Back
 	tmp = f[1];
 	f[1] = f[3];
 	f[3] = tmp;
