@@ -51,6 +51,7 @@
 //				Added temperature to CollisionMRT(). -Confirm no action needed in referenced MRT functions.
 //				Added temperature to CollisionCM() - very basically at the end
 //		10/01/2022:	Fixed incorrect comment notation
+//		1/03/2022:	Debugging, code runs - need to check if its correct
 //-------------------------------------------------------------------------------------------------------------------------------
 //				TO DO LIST - MARIUS
 //	-PRIORITY: Forces for f,g & h are different? I have used the same force as g for f. Check...
@@ -946,7 +947,6 @@ CudaDeviceFunction void calcWallPhaseIter(){
 		
 		//Find Temperature Details
 		real_t LocalTemp = getT();
-		real_t feq[9]
 		
 		// Find Macroscopic Details
 		mu = calcMu( C );
@@ -979,7 +979,7 @@ CudaDeviceFunction void calcWallPhaseIter(){
 		
 		//BoussinesqForce Approximation
 		real_t refTemperature = 0;
-		real_t BoussinesqForce = GravitationY*BoussinesqCoeff*(refTemperature-localTemp);
+		real_t BoussinesqForce = GravitationY*BoussinesqCoeff*(refTemperature-LocalTemp);
 
 		// CALCULATE FORCES:
 		real_t density_coeff = (Density_h-Density_l)/(PhaseField_h-PhaseField_l);
@@ -1034,7 +1034,8 @@ CudaDeviceFunction void calcWallPhaseIter(){
 		//Need to confirm this method is correct
 		//Need to confirm that my method of S[i] definition is correct as heat-tut did not run correctly
 		//Define BoussinesqCoeff, omega_k in xml file
-		SetEquilibrium(feq,rho*LocalTemp,U,V) //create feq[9] 
+		real_t feq[9];
+		SetEquilibrium(feq,rho*LocalTemp,U,V); //create feq[9] 
 		for (i=0; i< 9; i++){
 			S[i] = (1-omega_k/2)*f[i]*(sqrt(F_total[0]*F_total[0]+F_total[1]*F_total[1]))*(sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i])-(sqrt(U*U+V*V)))/(rho)*9.;
 			f[i]=f[i]-omega_k*(f[i]-feq[i])+S[i];	//collision
