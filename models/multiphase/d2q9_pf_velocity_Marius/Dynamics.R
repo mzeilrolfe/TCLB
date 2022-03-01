@@ -76,8 +76,8 @@ if (Options$RT) {
 	AddStage("BaseIter"  , "calcHydroIter" 		, save=Fields$group %in% c("g","h","Vel")		, load=DensityAll$group %in% c("g","h","Vel"))
     AddStage("PhaseIter" , "calcPhaseFIter"		, save=Fields$name  %in% c("PhaseF","PhaseOld") , load=DensityAll$group=="h")
   	AddStage("WallIter"  , "calcWallPhaseIter"  , save=Fields$group %in% c("PF")				, load=DensityAll$group=="nw") 
-} else if (Options$Thermo) {
-	AddStage("", save=Fields$group %in% c("f"))	#Learn Options, Stages & Actions so this can be properly added
+#} else if (Options$Thermo) {
+#	AddStage("", save=Fields$group %in% c("f"))	#Learn Options, Stages & Actions so this can be properly added
 } else if (Options$Outflow) {
 
 	# initialisation
@@ -143,8 +143,8 @@ AddSetting(name="Viscosity_h", tau_h='(3*Viscosity_h)', default=0.16666666, comm
 
 AddSetting(name="omega_bulk", comment='inverse of bulk relaxation time', default=1.0)
 AddSetting(name="bulk_visc", omega_bulk='1.0/(3*bulk_visc+0.5)',  comment='bulk viscosity')
-//----------------------------------------------------------------------------------------------------------------------------------
-			//Added Details for Temperature Addition
+#----------------------------------------------------------------------------------------------------------------------------------
+			#Added Details for Temperature Addition
 #   Inputs: Initial Thermal Properties
 AddSetting(name="InitTemperature", default=0, comment='Initial/Inflow temperature distribution', zonal=T)
 
@@ -153,7 +153,7 @@ AddSetting(name="omega_k", default=1.0 , comment='inverse of thermal relaxation 
 AddSetting(name="k", omega_k='1.0/(3*k+0.5)', default=0.16666666, comment='thermal conductivity of fluid (W/(m·K))')
 AddSetting(name="cp", , default=1.0, comment='specific heat capacity at constant pressure of fluid (J/(kg·K))')
 AddSetting(name="BoussinesqCoeff", default=0.0, comment='BoussinesqCoeff=rho_0*thermal_exp_coeff')
-//----------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------
 #	Inputs: Flow Properties
 AddSetting(name="VelocityX", default=0.0, comment='inlet/outlet/init velocity', zonal=T)
 AddSetting(name="VelocityY", default=0.0, comment='inlet/outlet/init velocity', zonal=T)

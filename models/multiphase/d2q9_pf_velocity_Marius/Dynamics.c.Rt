@@ -78,11 +78,11 @@
 
 //include <math.h>
 //define PI 3.1415926535897
-
+PI = 3.1415926535897
 <?R
-g = PV(Density$name[Density$group == "g"]) //Pressure
-h = PV(Density$name[Density$group == "h"]) //Phase
-f = PV(Density$name[Density$group == "f"]) //Temperature
+g = PV(Density$name[Density$group == "g"]) #Pressure
+h = PV(Density$name[Density$group == "h"]) #Phase
+f = PV(Density$name[Density$group == "f"]) #Temperature
 
 if (Options$Outflow){
 	g_neighbours = Density$nicename[Density$group == "g"]
@@ -108,7 +108,7 @@ if (Options$Outflow){
 CudaDeviceFunction real_t getT(){
 	real_t T;
 	real_t rho = getRho();
-	T = sum(f)/rho;
+	T = <?R C(sum(f))?>/rho ;
 	return T;
 }
 
@@ -438,7 +438,10 @@ CudaDeviceFunction void Init_distributions(){
 		h[i] = myPhaseF * Gamma[i] - 0.5*F_phi[i];   // heq
 		g[i] = Gamma[i] - wf[i]; 				     //geq
 	}
-	SetEquilibrium(f,rho*T,U,V)			//feq
+	
+	real_t T = getT();
+	real_t rho = getRho();
+	SetEquilibrium(f,rho*T,U,V);			//feq
 	#ifdef OPTIONS_RT
 		PhaseOld = myPhaseF;
 	#endif
@@ -939,7 +942,7 @@ CudaDeviceFunction void calcWallPhaseIter(){
 		real_t tmp1, stress[3];				// Stress tensor calculation
 		real_t F_phi[9], heq[9];			// Phase field collision terms
 		real_t F_i[9];						// Momentum distribution forcing term
-		
+		real_t S[9];
 		
 		//Find Temperature Details
 		real_t LocalTemp = getT();
@@ -1031,7 +1034,7 @@ CudaDeviceFunction void calcWallPhaseIter(){
 		//Need to confirm this method is correct
 		//Need to confirm that my method of S[i] definition is correct as heat-tut did not run correctly
 		//Define BoussinesqCoeff, omega_k in xml file
-		SetEquilibrium(feq[9],rho*T,U,V) //create feq[9] 
+		SetEquilibrium(feq,rho*LocalTemp,U,V) //create feq[9] 
 		for (i=0; i< 9; i++){
 			S[i] = (1-omega_k/2)*f[i]*(sqrt(F_total[0]*F_total[0]+F_total[1]*F_total[1]))*(sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i])-(sqrt(U*U+V*V)))/(rho)*9.;
 			f[i]=f[i]-omega_k*(f[i]-feq[i])+S[i];	//collision
@@ -1165,7 +1168,8 @@ CudaDeviceFunction void CollisionMRT(){
 	real_t F_phi[9], heq[9];		// Phase field collision terms
 	real_t F_i[9];					// Momentum distribution forcing term
 	real_t R[9];					// Populations for MRT relaxation
-
+	real_t S[9];
+	
 	// Find Macroscopic Details
 	real_t rho = calcRho(myPhaseF);
 	real_t tau = calcTau(myPhaseF, rho);
@@ -1239,21 +1243,25 @@ CudaDeviceFunction void CollisionMRT(){
 	//TEMPERATURE EVOLUTION UPDATE:
 	
 	//Not For Extended Forcing Scheme //What is extended Forcing Scheme??
+	real_t T = getT();
+	real_t feq[9];
+	SetEquilibrium(feq,rho*T,U,V); //Define feq 
 	for (int i=0; i<9; i++){
-		R[i] = f[i]-feq[i]
+		R[i] = f[i]-feq[i];
+	}
 	relaxMRT(R,1./omega_k); //replaced tau with 1/omega_k for temperature relaxation
 	
 	
 	//Collision
 	for (int i=0; i<9;i++){
 		S[i] = (1-omega_k/2)*f[i]*(sqrt(Fhydro.x*Fhydro.x+Fhydro.y*Fhydro.y))*(sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i])-(sqrt(U*U+V*V)))/(rho)*9.;
-		f[i] = f[i]-R[i]+S[i]
+		f[i] = f[i]-R[i]+S[i];
 	}
 }
 #endif
 //--------------------------------------------------------------------------------------------------------------------------------
 //	MISCELLANIOUS FUNCTIONS:
-CudaDeviceFunction float2 Color() {
+CudaDeviceFunction float2 Color(){
         float2 ret;
         //vector_t u = getU();
 		//ret.x = sqrt(u.x*u.x + u.y*u.y);
@@ -1509,7 +1517,7 @@ CudaDeviceFunction void MovingWall_N_Dirichlet(){
 	h[7] = h[5];
 	h[8] = h[6];
 	
-	#Added Temperature Boundary Condition. Confirm no added conditions. 
+	//Added Temperature Boundary Condition. Confirm no added conditions. 
 	f[4] = f[2];
 	f[7] = f[5];
 	f[8] = f[6];
