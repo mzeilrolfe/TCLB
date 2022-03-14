@@ -200,6 +200,7 @@ AddSetting(name="CenterY", default="0", comment='Circle Center y-coord')
 AddSetting(name="BubbleType", default="1", comment='Drop/bubble')
 
 #	Inputs: For phasefield evolution
+AddSetting(name="IntWidth", default=4,    comment='Anti-diffusivity coeff')#Added for F_surftens
 AddSetting(name="Density_h", comment='High density fluid')
 AddSetting(name="Density_l", comment='Low  density fluid')
 AddSetting(name="PhaseField_h", default=1, comment='PhaseField in high density fluid')

@@ -412,15 +412,36 @@ CudaDeviceFunction void temp_iter_f(){
 	U = U(0,0);
 	V = V(0,0);
 	real_t mag = U*U + V*V;
-	f[0] = calcGamma(0, U, V, mag);
-	f[1] = calcGamma(1, U, V, mag);
-	f[2] = calcGamma(2, U, V, mag);
-	f[3] = calcGamma(3, U, V, mag);
-	f[4] = calcGamma(4, U, V, mag);
-	f[5] = calcGamma(5, U, V, mag);
-	f[6] = calcGamma(6, U, V, mag);
-	f[7] = calcGamma(7, U, V, mag);
-	f[8] = calcGamma(8, U, V, mag);
+	real_t feq[9];
+	real_t R[9];
+	real_t S[9];
+	feq[0] = calcGamma(0, U, V, mag);
+	feq[1] = calcGamma(1, U, V, mag);
+	feq[2] = calcGamma(2, U, V, mag);
+	feq[3] = calcGamma(3, U, V, mag);
+	feq[4] = calcGamma(4, U, V, mag);
+	feq[5] = calcGamma(5, U, V, mag);
+	feq[6] = calcGamma(6, U, V, mag);
+	feq[7] = calcGamma(7, U, V, mag);
+	feq[8] = calcGamma(8, U, V, mag);
+
+	real_t myPhaseF = PhaseF(0,0);
+	real_t rho = getRho();
+	real_t tau = calcTau(myPhaseF,rho);
+	vector_t gradPhi = calcGradPhi();
+	real_t p = getNormalizedPressure();
+	vector_t Fhydro = calcTotalHydrodynamicForceMRT(gradPhi, myPhaseF, rho, tau, calcMu(myPhaseF),p);
+	
+	for (int i=0; i<9; i++){
+		R[i] = f[i]-feq[i];
+	}
+	relaxMRT(R,tau); //replaced tau with 1/omega_k for temperature relaxation
+	
+	//Collision
+	for (int i=0; i<9;i++){
+		S[i] = (1-1./(2*tau))*f[i]*(sqrt(Fhydro.x*Fhydro.x+Fhydro.y*Fhydro.y))*(sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i])-(sqrt(U*U+V*V)))/(rho)*9.;
+		f[i] = f[i]-R[i]+S[i];
+}
 }
 
 CudaDeviceFunction void Init_temp(){
@@ -535,8 +556,7 @@ CudaDeviceFunction void Init_distributions(){
 }
 
 //	ITERATION:
-CudaDeviceFunction void BC_Switcher ()
-{
+CudaDeviceFunction void BC_Switcher() {
 	switch (NodeType & NODE_BOUNDARY) {
 		case NODE_Solid:
 		case NODE_Wall:
@@ -1166,9 +1186,10 @@ CudaDeviceFunction vector_t calcTotalHydrodynamicForceMRT(vector_t gradPhi, real
 	// thermocapilary flow (use d3q27_pf_velocity for inspiration)
 	// Added 14/03, added Isotropic grad at beginning of file.
 		real_t Temp = gettemperature();
-		real_t SurfaceTension = getsurfacetension();
+		real_t SurfaceTension = getsurfaceTension();
 		real_t Cond = getthermalconductivity();
 		real_t tmpSig, delta_s, dotTMP, magnPhi, magnPhi2;
+		vector_t gPhi = gradPhi;
 		magnPhi = sqrt(gPhi.x*gPhi.x + gPhi.y*gPhi.y + 1e-32);
 		magnPhi2 = magnPhi*magnPhi;
 		vector_t gradT;
