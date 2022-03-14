@@ -143,6 +143,9 @@ CudaDeviceFunction vector_t getNormal(){
 }
 
 // 	HELPER FUNCTIONS:
+CudaDeviceFunction real_t dotProduct( vector_t a, vector_t b) {
+		return a.x*b.x + a.y*b.y + a.z*b.z;
+}
 CudaDeviceFunction vector_t calcGradPhi(){
 	vector_t gradPhi;
 	// eq 34 from "Improved locality of the phase-field lattice Boltzmann 
