@@ -62,14 +62,7 @@ if (Options$thermo){
 	f = PV(Density$name[Density$group == "f"])
 }
 
-	IsotropicGrad <- function(myStringVec, myStringSca){
-		cat(paste0(myStringVec,".y = 16.00 * (",myStringSca, "(0,1,0) - ", myStringSca, "(0,-1,0)) + ", myStringSca, "(1,1,1) + ", myStringSca, "(-1,1,1) - ", myStringSca, "(1,-1,1) - ", myStringSca, "(-1,-1,1) + ", myStringSca, "(1,1,-1)+ ", myStringSca, "(-1,1,-1)- ", myStringSca,  "(1,-1,-1)- ", myStringSca, "(-1,-1,-1) +  4.00 * (", myStringSca, "(1,1,0) + ", myStringSca, "(-1,1,0) - ", myStringSca, "(1,-1,0) - ", myStringSca, "(-1,-1,0) +  ", myStringSca, "(0,1,1) - ", myStringSca, "(0,-1,1) + ", myStringSca, "(0,1,-1) - ", myStringSca, "(0,-1,-1));\n"))
-		cat(paste0(myStringVec,".x = 16.00 * (",myStringSca, "(1,0,0) - ", myStringSca, "(-1,0,0)) + ", myStringSca, "(1,1,1) - ", myStringSca, "(-1,1,1) + ", myStringSca, "(1,-1,1) - ", myStringSca, "(-1,-1,1) + ", myStringSca, "(1,1,-1)- ", myStringSca, "(-1,1,-1) + ", myStringSca, "(1,-1,-1) - ", myStringSca, "(-1,-1,-1) +  4.00 * (", myStringSca, "(1,1,0) - ", myStringSca, "(-1,1,0) + ", myStringSca, "(1,-1,0) - ", myStringSca, "(-1,-1,0) + ", myStringSca, "(1,0,1) - ", myStringSca, "(-1,0,1) + ", myStringSca, "(1,0,-1) - ", myStringSca, "(-1,0,-1));\n"))
-		cat(paste0(myStringVec,".z = 16.00 * (",myStringSca, "(0,0,1) - ", myStringSca, "(0,0,-1)) + ", myStringSca, "(1,1,1) + ", myStringSca, "(-1,1,1) + ", myStringSca, "(1,-1,1) + ", myStringSca, "(-1,-1,1) - ", myStringSca, "(1,1,-1)- ", myStringSca, "(-1,1,-1)- ", myStringSca,  "(1,-1,-1)- ", myStringSca, "(-1,-1,-1) +  4.00 * (", myStringSca, "(1,0,1) + ", myStringSca, "(-1,0,1) - ", myStringSca, "(1,0,-1) - ", myStringSca, "(-1,0,-1) +  ", myStringSca, "(0,1,1) + ", myStringSca, "(0,-1,1) - ", myStringSca, "(0,1,-1) - ", myStringSca, "(0,-1,-1));\n"))
-		cat(paste0(myStringVec,".x /= 72.0;\n"))
-		cat(paste0(myStringVec,".y /= 72.0;\n"))
-		cat(paste0(myStringVec,".z /= 72.0;\n"))
-	}
+
 ?>
 //	EXPORTABLE QUANTITIES:
 #ifdef OPTIONS_thermo
@@ -144,7 +137,7 @@ CudaDeviceFunction vector_t getNormal(){
 
 // 	HELPER FUNCTIONS:
 CudaDeviceFunction real_t dotProduct( vector_t a, vector_t b) {
-		return a.x*b.x + a.y*b.y + a.z*b.z;
+		return a.x*b.x + a.y*b.y;
 }
 CudaDeviceFunction vector_t calcGradPhi(){
 	vector_t gradPhi;
@@ -1197,7 +1190,7 @@ CudaDeviceFunction vector_t calcTotalHydrodynamicForceMRT(vector_t gradPhi, real
 		magnPhi2 = magnPhi*magnPhi;
 		vector_t gradT;
 		<?R
-			IsotropicGrad('gradT','Temp')
+			#IsotropicGrad('gradT','Temp')
 		?>
 		dotTMP = dotProduct(gradT,gPhi);
 		if (surfPower < 2) {
@@ -1207,7 +1200,7 @@ CudaDeviceFunction vector_t calcTotalHydrodynamicForceMRT(vector_t gradPhi, real
 		} else {
 			vector_t gradSig;
 			<?R
-				IsotropicGrad('gradSig','SurfaceTension')
+				#IsotropicGrad('gradSig','SurfaceTension')
 			?>
 			delta_s = 1.5*IntWidth;
 			F_surf_tension[0] = mu * gPhi.x + delta_s*gradSig.x*( magnPhi2*gradT.x - dotTMP*gPhi.x );
@@ -1231,7 +1224,7 @@ CudaDeviceFunction vector_t calcTotalHydrodynamicForceMRT(vector_t gradPhi, real
 		
 		relaxMRT(R, tau);
 
-		// Stress/strain Tensor
+		// Stress strain Tensor
 		stress[0] = 0.0;stress[1] = 0.0;stress[2] = 0.0;
 		for (int i=0; i< 9; i++){
 			stress[0] += R[i]*d2q9_ex[i]*d2q9_ex[i];
@@ -1246,7 +1239,7 @@ CudaDeviceFunction vector_t calcTotalHydrodynamicForceMRT(vector_t gradPhi, real
 		// Total Hydrodynamic Force
 		F_total_hydro.x = F_surf_tension[0] + F_pressure[0] + F_body[0] + F_mu[0];
 		F_total_hydro.y = F_surf_tension[1] + F_pressure[1] + F_body[1] + F_mu[1];
-		F_total_hydro.z = 0;
+
 
 		// update velocity and re-iterate
 		U = g[1]-g[3]+g[5]-g[6]-g[7]+g[8] + 0.5*F_total_hydro.x/rho;
