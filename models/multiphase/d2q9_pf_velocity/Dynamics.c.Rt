@@ -62,7 +62,12 @@ if (Options$thermo){
 	f = PV(Density$name[Density$group == "f"])
 }
 
-
+	IsotropicGrad <- function(myStringVec, myStringSca){
+		cat(paste0(myStringVec,".y = 4.00 * (",myStringSca, "(0,1) - ", myStringSca, "(0,-1)) + ", myStringSca, "(1,1) + ", myStringSca, "(-1,1) - ", myStringSca, "(1,-1) - ", myStringSca, "(-1,-1);\n"))
+		cat(paste0(myStringVec,".x = 4.00 * (",myStringSca, "(1,0) - ", myStringSca, "(-1,0)) + ", myStringSca, "(1,1) - ", myStringSca, "(-1,1) + ", myStringSca, "(1,-1) - ", myStringSca, "(-1,-1);\n"))
+		cat(paste0(myStringVec,".x /= 18.0;\n"))
+		cat(paste0(myStringVec,".y /= 18.0;\n"))
+	}
 ?>
 //	EXPORTABLE QUANTITIES:
 #ifdef OPTIONS_thermo
