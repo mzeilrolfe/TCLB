@@ -113,6 +113,8 @@ if (Options$thermo){
 	AddSetting("cp_l",				comment="specific heat for light phase unit=[J/kg/K]")
 	AddSetting("k_h", 				comment="thermal conductivity for heavy phase unit=[W/m/K]")
 	AddSetting("k_l", 				comment="thermal conductivity for light phase unit=[W/m/K]")
+	AddSetting("Beta_h",				comment="thermal expansion coefficient for heavy phase unit=[]")
+	AddSetting("Beta_l",				comment="thermal expansion coefficient for light phase unit=[]")
 	AddSetting("dT",				comment="Application of vertical temp gradient to speed up initialisation unit=[K]")
 	AddSetting("dTx", default="0",	comment="Application of horizontal temp gradient to speed up initialisation unit=[K]")	
 	AddSetting("stabiliser", default="1",	comment="If not solving flow field, can adjust temperature timestep")	
@@ -215,6 +217,8 @@ AddSetting(name="radAngle",default='1.570796', comment='Contact angle in radians
 # 	Inputs: Fluid Properties
 AddSetting(name="tau_l", comment='relaxation time (low density fluid)')
 AddSetting(name="tau_h", comment='relaxation time (high density fluid)')
+AddSetting(name="dynamic_viscosity_l", default=0.1,comment='dynamic viscosity light')
+AddSetting(name="dynamic_viscosity_h", default=0.1,comment='dynamic viscosity heavy')
 AddSetting(name="Viscosity_l", tau_l='(3*Viscosity_l)', default=0.16666666, comment='kinematic viscosity')
 AddSetting(name="Viscosity_h", tau_h='(3*Viscosity_h)', default=0.16666666, comment='kinematic viscosity')
 
