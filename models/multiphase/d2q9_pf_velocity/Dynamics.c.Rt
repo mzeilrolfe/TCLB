@@ -248,7 +248,7 @@ CudaDeviceFunction real_t calcGamma_T(int i, real_t u, real_t v, real_t u2mag){
 	// thermal equilibrium functions
 	//eq 43 in AN IMPROVED THERMAL LATTICE BOLTZMANN MODEL FOR FLOWS WITHOUT VISCOUS 
 	//HEAT  DISSIPATION AND COMPRESSION WORK
-	real_t gamma, tmp, c2;
+	real_t gamma, tmp, c2, tmp2;
 	tmp = (d2q9_ex[i]*u+d2q9_ey[i]*v);
 	c2 = (d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]); //c^2
 
@@ -302,14 +302,14 @@ CudaDeviceFunction real_t calcTau_T(real_t myPhaseF, real_t rho)
 	
 	real_t tau_v = calcTau(myPhaseF,rho);
 	real_t normPhaseF = (myPhaseF - PhaseField_l)/(PhaseField_h - PhaseField_l);
-	dynamic_viscosity = dynamic_viscosity_l+(dynamic_viscosity_h-dynamic_viscosity_l)*normPhaseF
-	kinematic_viscosity = Viscosity_l+(Viscosity_h-Viscosity_l)*normPhaseF;
+	real_t dynamic_viscosity = dynamic_viscosity_l+(dynamic_viscosity_h-dynamic_viscosity_l)*normPhaseF;
+	real_t kinematic_viscosity = Viscosity_l+(Viscosity_h-Viscosity_l)*normPhaseF;
 	
 	real_t momentum_diffusivity = dynamic_viscosity/rho;
 	real_t thermal_diffusivity = kinematic_viscosity/rho;
 	
 	real_t Pr = momentum_diffusivity/thermal_diffusivity;
-	return tau_v/Pr
+	return tau_v/Pr;
 }
 
 
@@ -469,18 +469,19 @@ CudaDeviceFunction void temp_iter_f(){
 	real_t tau = calcTau_T(myPhaseF,rho); //thermal relaxation time
 	vector_t gradPhi = calcGradPhi();
 	real_t p = getNormalizedPressure();
-	vector_t F_thermo = calcTotalThermoForceMRT(rho);
-	
+	vector_t F_thermo = calcTotalThermoForceMRT(rho,myPhaseF);
+	real_t c;
 	for (int i=0; i<9; i++){
 		R[i] = f[i]-feq[i];
 	}
 	relaxMRT(R,tau); //replaced tau with 1/omega_k for temperature relaxation
 	
 	real_t F_thermo_mag = sqrt(F_thermo.x*F_thermo.x+F_thermo.y*F_thermo.y);
-	real_t c = sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]);
+	
 	real_t u_mag = sqrt(U*U+V*V);
 	//Collision
 	for (int i=0; i<9;i++){
+		c = sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]);
 		S[i] = (1-1./(2*tau))*f[i]*F_thermo_mag*(c-u_mag)/(rho)*9.; // collision with force term
 		f[i] = f[i]-R[i]+S[i]; //update
 }
@@ -1194,7 +1195,7 @@ CudaDeviceFunction void relaxMRT(real_t R[9], real_t tau)
 	R[8] = ( S[2] + ( S[1] + S[0]*2. )*2. + ( -S[6] + S[4] - S[8]*3. + ( -S[5] + S[3] )*2. )*3. )/36.;
 }
 
-CudaDeviceFunction vector_t calcTotalThermoForceMRT(myPhaseF, rho)
+CudaDeviceFunction vector_t calcTotalThermoForceMRT(real_t myPhaseF, real_t rho)
 {	
 	real_t normPhaseF = (myPhaseF - PhaseField_l)/(PhaseField_h - PhaseField_l);
 	real_t Beta = Beta_l + (Beta_h-Beta_l)*normPhaseF; //thermal expansion coefficient
@@ -1211,7 +1212,7 @@ CudaDeviceFunction vector_t calcTotalThermoForceMRT(myPhaseF, rho)
 	F_thermo.x = F_conv.x;
 	F_thermo.y = F_conv.y;
 	
-	return F_thermo
+	return F_thermo;
 }
 
 

@@ -27,9 +27,9 @@
     <Param name="omega_phi" value="1"/>
     <Param name="sigma" value="1"/>
     <Param name="cp_h" value="1"/>
-    <Param name="cp_l" value="1"/>
+    <Param name="cp_l" value="0.5"/>
     <Param name="k_h" value="1"/>
-    <Param name="k_l" value="1"/>
+    <Param name="k_l" value="0.5"/>
     <Param name="dT" value="1"/>
     <Param name="sigma_T" value="1"/>
     <Param name="sigma_TT" value="1"/>
