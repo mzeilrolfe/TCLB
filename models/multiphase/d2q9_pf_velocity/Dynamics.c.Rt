@@ -66,12 +66,8 @@ if (Options$thermo){
 //	EXPORTABLE QUANTITIES:
 #ifdef OPTIONS_thermo
 CudaDeviceFunction real_t gettemperature(){
-	return <?R 
-	if (Options$thermo){
-		C(sum(f)) 
-	} else {
-		0
-	}?>;
+	real_t t = <?R C(sum(f)) ?>;
+	return t;
 }
 
 CudaDeviceFunction real_t getsurfaceTension(){
@@ -248,7 +244,7 @@ CudaDeviceFunction real_t calcGamma_T(int i, real_t u, real_t v, real_t u2mag){
 	// thermal equilibrium functions
 	//eq 43 in AN IMPROVED THERMAL LATTICE BOLTZMANN MODEL FOR FLOWS WITHOUT VISCOUS 
 	//HEAT  DISSIPATION AND COMPRESSION WORK
-	real_t gamma, tmp, c2, tmp2;
+	real_t gammat, tmp, c2, tmp2;
 	tmp = (d2q9_ex[i]*u+d2q9_ey[i]*v);
 	c2 = (d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]); //c^2
 
@@ -258,13 +254,13 @@ CudaDeviceFunction real_t calcGamma_T(int i, real_t u, real_t v, real_t u2mag){
 	real_t rho_0 = getRho();
 	
 	if (i=0){
-		gamma = rho_0-4*5/12*p/c2+rho_0*tmp2;
+		gammat = rho_0-4*5/12*p/c2+rho_0*tmp2;
 	} else if (i<5) {
-		gamma =1/3*p/c2+rho_0*tmp2 ;
+		gammat =1/3*p/c2+rho_0*tmp2 ;
 	} else {
-		gamma =1/12*p/c2+rho_0*tmp2 ;
+		gammat =1/12*p/c2+rho_0*tmp2 ;
 	}
-	return gamma;
+	return gammat;
 }
 
 CudaDeviceFunction real_t calcF_phi(int i, real_t numerator, real_t nx, real_t ny){
@@ -454,6 +450,7 @@ CudaDeviceFunction void temp_iter_f(){
 	real_t feq[9];
 	real_t R[9];
 	real_t S[9];
+	//equilibrium functions
 	feq[0] = calcGamma_T(0, U, V, mag);
 	feq[1] = calcGamma_T(1, U, V, mag);
 	feq[2] = calcGamma_T(2, U, V, mag);
