@@ -429,7 +429,6 @@ CudaDeviceFunction void temp_init_f(){
 	U = VelocityX;
 	V = VelocityY;
 	real_t mag = U*U + V*V;
-	// Marius to check the f_eq formula for the thermal LBM
 	f[0] = calcGamma_T(0, U, V, mag);
 	f[1] = calcGamma_T(1, U, V, mag);
 	f[2] = calcGamma_T(2, U, V, mag);
@@ -480,7 +479,7 @@ CudaDeviceFunction void temp_iter_f(){
 	for (int i=0; i<9;i++){
 		c = sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]);
 		S[i] = (1-1./(2*tau))*f[i]*F_thermo_mag*(c-u_mag)/(rho)*9.; // collision with force term
-		f[i] = f[i]-R[i]+S[i]; //update
+		f[i] = f[i]-R[i]+S[i]; //updating term
 }
 }
 
