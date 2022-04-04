@@ -9,10 +9,10 @@
                 <Box dy="-1"/>
                 <Box nz="1"/>
                 <Box dz="-1"/>
-                <STL file="P1_Plain.stl"/> 
+                <STL file="P1_Plain.stl" Xrot="90d"/> 
         </Wall>
         <None name="heated_region">
-             <STL file="P1_Plain.stl"/>
+             <STL file="P1_Plain.stl" Xrot="90d"/>
         </None>        
 
         
