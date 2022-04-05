@@ -289,16 +289,12 @@ CudaDeviceFunction real_t calcTau_T(real_t myPhaseF, real_t rho)
 	real_t tau_v = calcTau(myPhaseF,rho);			//getting tau from other fields
 	real_t normPhaseF = (myPhaseF - PhaseField_l)/(PhaseField_h - PhaseField_l);
 	
-	// Calculate local dynamic and kinematic viscosities
-	real_t dynamic_viscosity = dynamic_viscosity_l+(dynamic_viscosity_h-dynamic_viscosity_l)*normPhaseF;
-	real_t kinematic_viscosity = Viscosity_l+(Viscosity_h-Viscosity_l)*normPhaseF;
-	
-	// Calculate local momentum and thermal diffusivities
-	real_t momentum_diffusivity = dynamic_viscosity/rho;
-	real_t thermal_diffusivity = kinematic_viscosity/rho;
+	real_t viscosity = Viscosity_l+(Viscosity_h-Viscosity_l)*normPhaseF;
+	real_t cp = cp_l+(cp_h-cp_l)*normPhaseF;
+	real_t cond = getthermalconductivity();
 	
 	//Calculate Prandtl number
-	real_t Pr = momentum_diffusivity/thermal_diffusivity;
+	real_t Pr = viscosity*rho*cp/cond;
 	return tau_v/Pr; //Thermal relaxation time: eq 9 from regularized thermal LBM ...
 }
 
@@ -489,9 +485,9 @@ CudaDeviceFunction void temp_iter_f(){
 
 	real_t myPhaseF = PhaseF(0,0);
 	real_t rho = getRho();
-	//real_t tau = calcTau_T(myPhaseF,rho); 
+	real_t tau = calcTau_T(myPhaseF,rho); 
 	//thermal relaxation time
-	real_t tau = calcTau(myPhaseF,rho);
+	//real_t tau = calcTau(myPhaseF,rho);
 	vector_t gradPhi = calcGradPhi();
 	real_t p = getNormalizedPressure();
 	vector_t F_thermo = calcTotalThermoForceMRT(rho,myPhaseF);
