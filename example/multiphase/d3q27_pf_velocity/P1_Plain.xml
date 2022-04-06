@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <CLBConfig version="2.0" output="output/">
-      <Geometry nx="512" ny="24" nz="24" >
+	<Units>
+		<Param value="0.001m" gauge="5"/>
+	</Units>
+      <Geometry nx="0.005m" ny="0.02m" nz="0.005m" >
       <MRT><Box /></MRT>
         <Wall mask="ALL" name="border" >
                 <Box nx="1"/>
@@ -9,10 +12,10 @@
                 <Box dy="-1"/>
                 <Box nz="1"/>
                 <Box dz="-1"/>
-                <STL file="P1_Plain.stl" Xrot="90d"/> 
+                <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" Zrot="90d" Z="-0.02m" YRot="90d" scale="1/1000"/> 
         </Wall>
         <None name="heated_region">
-             <STL file="P1_Plain.stl" Xrot="90d"/>
+             <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" Zrot="90d" Z="-0.02m" YRot="90d" scale="1/1000"/>
         </None>        
 
         
@@ -34,19 +37,17 @@
 	<Param name="T_ref"    	value="16"/>
 	<Param name="dT"	value="0.1"/>
 	<Param name="sigma_T" 	value="-2.5e-4"/>
-	<Param name="T_init"    value="0"/>
 	<Param name="T_init"    value="32" zone="heated_region"/>
 	<Param name="cp_h"      value="1"/>
 	<Param name="cp_l"	value="1"/>
 	<Param name="k_h" 	value="0.1"/>
-	<Param name="k_l" 	value="0.1"/>
+	<Param name="k_l" 	value="0.1"/>>
 
 
     </Model>
-<VTK Iterations="1"/>
-<Solve Iterations="10" output="output/"> <VTK Iterations="1"/> </Solve>
-<Failcheck Iterations="500" nx="128" ny="128" />
-<Log Iterations="100"/>
-<Solve Iterations="10000" output="output/"> <VTK Iterations="500"/> </Solve>
+<VTK/>
+<VTK Iterations="1"/> 
+<Solve Iterations="20" output="output/"> 
+</Solve>
 </CLBConfig>
 
