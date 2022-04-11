@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <CLBConfig version="2.0" output="output/">
 	<Units>
-		<Param value="0.001m" gauge="5"/>
+		<Param value="0.001m" gauge="25"/>
 	</Units>
-      <Geometry nx="0.005m" ny="0.02m" nz="0.005m" >
+      <Geometry nx="0.02m" ny="0.005m" nz="0.01m" >
       <MRT><Box /></MRT>
         <Wall mask="ALL" name="border" >
                 <Box nx="1"/>
@@ -12,42 +12,43 @@
                 <Box dy="-1"/>
                 <Box nz="1"/>
                 <Box dz="-1"/>
-                <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" Zrot="90d" Z="-0.02m" YRot="90d" scale="1/1000"/> 
+                <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="4/1000"/> 
         </Wall>
         <None name="heated_region">
-             <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" Zrot="90d" Z="-0.02m" YRot="90d" scale="1/1000"/>
+             <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="4/1000"/>
         </None>        
 
         
   </Geometry>
     <Model>
 	<Param name="Radius" 		value="5"/>
-	<Param name="CenterX" 		value="15"/>
+	<Param name="CenterX" 		value="45"/>
 	<Param name="CenterY" 		value="12"/>
-	<Param name="CenterZ" 		value="20"/>
-	<Param name="BubbleType" 	value="-1"/>
-	<Param name="Density_h"     value="1"/>
+	<Param name="CenterZ" 		value="25"/>
+	<Param name="BubbleType" 	value="1"/>
+	<Param name="Density_h"     value="1000"/>
 	<Param name="Density_l"     value="1"/>
-	<Param name="Viscosity_h"   value="0.1"/>
-	<Param name="Viscosity_l"   value="0.1"/>
-	<Param name="sigma"         value="5e-3"/>
+	<Param name="Viscosity_h"   value="1e-6"/>
+	<Param name="Viscosity_l"   value="12.71e-6"/>
+	<Param name="sigma"         value="0.728"/>
 	<Param name="M"             value="0.05"/>
 	<Param name="IntWidth"      value="4"/>
       	<Param name="T_init"        value="16"/>
 	<Param name="T_ref"    	value="16"/>
 	<Param name="dT"	value="0.1"/>
 	<Param name="sigma_T" 	value="-2.5e-4"/>
-	<Param name="T_init"    value="32" zone="heated_region"/>
-	<Param name="cp_h"      value="1"/>
-	<Param name="cp_l"	value="1"/>
-	<Param name="k_h" 	value="0.1"/>
-	<Param name="k_l" 	value="0.1"/>>
+	<Param name="cp_h"      value="4.18"/>
+	<Param name="cp_l"	value="1.01"/>
+	<Param name="k_h" 	value="0.6"/>
+	<Param name="k_l" 	value="0.026"/>
+	<Param name="GravitationZ" 	value="-0.03"/>
+	
 
 
     </Model>
 <VTK/>
-<VTK Iterations="1"/> 
-<Solve Iterations="20" output="output/"> 
+<VTK Iterations="2"/> 
+<Solve Iterations="40" output="output/"> 
 </Solve>
 </CLBConfig>
 

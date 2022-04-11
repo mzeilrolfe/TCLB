@@ -35,7 +35,7 @@
     <Param name="IntWidth" value="4"/>
   </Model>
   <VTK/>
-  <Solve Iterations="10" output="output/"> 
-    <VTK Iterations="1"/> 
+  <Solve Iterations="1000" output="output/"> 
+    <VTK Iterations="50"/> 
   </Solve>
 </CLBConfig>

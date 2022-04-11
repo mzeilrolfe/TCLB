@@ -490,12 +490,17 @@ CudaDeviceFunction void temp_iter_f(){
 	//real_t tau = calcTau(myPhaseF,rho);
 	vector_t gradPhi = calcGradPhi();
 	real_t p = getNormalizedPressure();
+	real_t cp = cp_l+(cp_h-cp_l)*normPhaseF;
+	real_t cond = getthermalconductivity();
 	vector_t F_thermo = calcTotalThermoForceMRT(rho,myPhaseF);
+	vector_t gradT;
+	gradT.x = (Temp(1,0) - Temp(-1,0))/3.0 + (Temp(1,1) - Temp(-1,-1) + Temp(1,-1) - Temp(-1,1))/12.0;
+	gradT.y = (Temp(0,1) - Temp(0,-1))/3.0 + (Temp(1,1) - Temp(-1,-1) + Temp(-1,1) - Temp(1,-1))/12.0;
 	real_t c;
 	for (int i=0; i<9; i++){
 		R[i] = f[i]-feq[i];
 	}
-
+	
 	//Perhaps just implement SRT for now
 	relaxMRT(R,tau); //completes collision
 	
@@ -504,11 +509,25 @@ CudaDeviceFunction void temp_iter_f(){
 	
 	real_t u_mag = sqrt(U*U+V*V);
 	//Develops Forcing term and updates f-field
+	real_t dTdt;
+	for (int j=0; j++){
+		if j=0;
+			dTdt =(<?R C(sum(R)) ?>)/9.; 
+		else
+			dTdt =(<?R C(sum(diff)) ?>)/9.;
+	}
+	real_t ST;
+	ST = dTdt+U*gradT.x+V*gradT.y;
+	real_t f_old[9];
+	real_t diff[9];
 	for (int i=0; i<9;i++){
+		f_old[i] = f[i]
 		c = sqrt(d2q9_ex[i]*d2q9_ex[i]+d2q9_ey[i]*d2q9_ey[i]);
-		S[i] = (1-1./(2*tau))*f[i]*F_thermo_mag*(c-u_mag)/(rho)*9.; // Force term
+		S[i] = wf[i]*ST; // Force term
 		f[i] = f[i]-R[i]+S[i]; //updating term
-}
+		diff[i] = f[i]-f_old[i]; //calculate change for time dependent derivative
+		
+	}
 }
 
 CudaDeviceFunction void Init_temp(){
@@ -1226,15 +1245,19 @@ CudaDeviceFunction vector_t calcTotalThermoForceMRT(real_t myPhaseF, real_t rho)
 	vector_t gradT;
 	gradT.x = (Temp(1,0) - Temp(-1,0))/3.0 + (Temp(1,1) - Temp(-1,-1) + Temp(1,-1) - Temp(-1,1))/12.0;
 	gradT.y = (Temp(0,1) - Temp(0,-1))/3.0 + (Temp(1,1) - Temp(-1,-1) + Temp(-1,1) - Temp(1,-1))/12.0;
-	
+	real_t temp = gettemperature();
 	vector_t F_conv; //convection force
-	F_conv.x = rho*GravitationX*Beta*gradT.x;
-	F_conv.x = rho*GravitationY*Beta*gradT.x;
+	F_conv.x = rho*GravitationX*Beta*gradT.x;//temp instead?
+	F_conv.y = rho*GravitationY*Beta*gradT.y;//temp instead?
 	
+	vector_t F_cond; //conduction force
+	real_t cond = getthermalconductivity();
+	F_cond.x = cond*temp;
+	F_cond.y = cond*temp;
 	
 	vector_t F_thermo;
-	F_thermo.x = F_conv.x;
-	F_thermo.y = F_conv.y;
+	F_thermo.x = F_conv.x;// + F_cond.x; get NAN when using both forces?
+	F_thermo.y = F_conv.y;// + F_cond.y;
 	
 	return F_thermo;
 }
