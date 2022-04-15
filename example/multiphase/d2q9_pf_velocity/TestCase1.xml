@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <CLBConfig version="2.0" output="output/">
+  	<Units>
+		<Param _name="dx" value="0.001m" gauge="5"/>
+		<Param _name="viscosity" value="1e-6m2/s" gauge="0.01"/>
+		<Param _name="st" value="0.0728kg/s2" gauge="1e-4"/>
+	</Units>
   <Geometry nx="128" ny="128" >
       <MRT>
         <Box />
@@ -11,31 +16,31 @@
         <Box dy="-1"/>
       </Wall>
       <None name="heated_region">
-        <Box dy="-1" /> 
+        <Box dx="60" nx="8" dy="60" ny="8"/> 
       </None>        
   </Geometry>
   <Model>
-    <Param name="T_init" value="0"/>
-    <Param name="T_init" value="1" zone="heated_region"/>
-    <Param name="T_ref" value="1"/>
-    <Param name="sigma_T" value="1e-3"/>
-    <Param name="k_h" value="0.1"/>
-    <Param name="k_h" value="0.1"/>
-
-    <Param name="PhaseField_h" value="1"/>
-    <Param name="PhaseField_l" value="0" />
-    <Param name="PhaseField_init" value="1"/>
-    <Param name="Density_h" value="1"/>
-    <Param name="Density_l" value="1"/>
-    <Param name="sigma" value="1e-5"/>
-    <Param name="Viscosity_h" value="0.16"/>
-    <Param name="Viscosity_l" value="0.16"/>
-
-    <Param name="M" value="0.05"/>
-    <Param name="IntWidth" value="4"/>
+	<Param name="T_init" value="0"/>
+	<Param name="T_init" value="1" zone="heated_region"/>
+	<Param name="T_ref" value="0.5"/>
+	<Param name="sigma_T" 	value="-2.5e-5"/>
+	<Param name="cp_h"      value="100"/>
+	<Param name="cp_l"	value="24"/>
+	<Param name="k_h" 	value="0.01"/>
+	<Param name="k_l" 	value="0.0005495"/>
+	<Param name="PhaseField_h" value="1"/>
+	<Param name="PhaseField_l" value="0" />
+	<Param name="PhaseField_init" value="1"/>
+	<Param name="Density_h" value="1"/>
+	<Param name="Density_l" value="0.001"/>
+	<Param name="sigma" value="0.0728kg/s2"/>
+	<Param name="Viscosity_h"   value="1e-6m2/s"/>
+	<Param name="Viscosity_l"   value="12.71e-6m2/s"/>
+	<Param name="M" value="0.05"/>
+	<Param name="IntWidth" value="4"/>
   </Model>
   <VTK/>
-  <Solve Iterations="1000" output="output/"> 
-    <VTK Iterations="50"/> 
+  <Solve Iterations="100" output="output/"> 
+    <VTK Iterations="5"/> 
   </Solve>
 </CLBConfig>

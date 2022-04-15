@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <CLBConfig version="2.0" output="output/">
 	<Units>
-		<Param value="0.001m" gauge="25"/>
+		<Param _name="dx" value="0.001m" gauge="5"/>
+		<Param _name="viscosity" value="1e-6m2/s" gauge="0.01"/>
+		<Param _name="st" value="0.0728kg/s2" gauge="1e-4"/>
 	</Units>
       <Geometry nx="0.02m" ny="0.005m" nz="0.01m" >
       <MRT><Box /></MRT>
@@ -12,10 +14,10 @@
                 <Box dy="-1"/>
                 <Box nz="1"/>
                 <Box dz="-1"/>
-                <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="4/1000"/> 
+                <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="1e-3m"/> 
         </Wall>
         <None name="heated_region">
-             <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="4/1000"/>
+             <STL file="example/multiphase/d3q27_pf_velocity/P1_Plain.stl" scale="1e-3m"/>
         </None>        
 
         
@@ -26,29 +28,30 @@
 	<Param name="CenterY" 		value="12"/>
 	<Param name="CenterZ" 		value="25"/>
 	<Param name="BubbleType" 	value="1"/>
-	<Param name="Density_h"     value="1000"/>
-	<Param name="Density_l"     value="1"/>
-	<Param name="Viscosity_h"   value="1e-6"/>
-	<Param name="Viscosity_l"   value="12.71e-6"/>
-	<Param name="sigma"         value="0.728"/>
+	<Param name="Density_h"     value="1"/>
+	<Param name="Density_l"     value="0.001"/>
+	<Param name="Viscosity_h"   value="1e-6m2/s"/>
+	<Param name="Viscosity_l"   value="12.71e-6m2/s"/>
+	<Param name="sigma"         value="0.0728kg/s2"/>
 	<Param name="M"             value="0.05"/>
 	<Param name="IntWidth"      value="4"/>
-      	<Param name="T_init"        value="16"/>
+	<Param name="radAngle"      value="60d"/>
+      	<!--<Param name="T_init"        value="16"/>
 	<Param name="T_ref"    	value="16"/>
 	<Param name="dT"	value="0.1"/>
-	<Param name="sigma_T" 	value="-2.5e-4"/>
-	<Param name="cp_h"      value="4.18"/>
-	<Param name="cp_l"	value="1.01"/>
-	<Param name="k_h" 	value="0.6"/>
-	<Param name="k_l" 	value="0.026"/>
-	<Param name="GravitationZ" 	value="-0.03"/>
+	<Param name="sigma_T" 	value="-2.5e-4N/m2"/>
+	<Param name="cp_h"      value="4.18J/kg/K"/>
+	<Param name="cp_l"	value="1.01J/kg/K"/>
+	<Param name="k_h" 	value="0.6W/m/K"/>
+	<Param name="k_l" 	value="0.026W/m/K"/>-->
+	<Param name="GravitationZ" 	value="-3m/s2"/>
 	
 
 
     </Model>
 <VTK/>
 <VTK Iterations="2"/> 
-<Solve Iterations="40" output="output/"> 
+<Solve Iterations="20" output="output/"> 
 </Solve>
 </CLBConfig>
 
