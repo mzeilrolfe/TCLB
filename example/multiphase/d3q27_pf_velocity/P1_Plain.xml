@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <CLBConfig version="2.0" output="output/">
 	<Units>
-		<Param _name="dx" value="0.001m" gauge="5"/>
-		<Param _name="viscosity" value="1e-6m2/s" gauge="0.01"/>
+		<Param _name="dx" value="0.001m" gauge="25"/>
+		<Param _name="viscosity" value="1e-6m2/s" gauge="0.25"/>
 		<Param _name="st" value="0.0728kg/s2" gauge="1e-4"/>
 	</Units>
       <Geometry nx="0.02m" ny="0.005m" nz="0.01m" >
@@ -23,10 +23,10 @@
         
   </Geometry>
     <Model>
-	<Param name="Radius" 		value="5"/>
-	<Param name="CenterX" 		value="45"/>
-	<Param name="CenterY" 		value="12"/>
-	<Param name="CenterZ" 		value="25"/>
+	<Param name="Radius" 		value="0.001m"/>
+	<Param name="CenterX" 		value="0.003m"/>
+	<Param name="CenterY" 		value="0.0025m"/>
+	<Param name="CenterZ" 		value="0.006m"/>
 	<Param name="BubbleType" 	value="1"/>
 	<Param name="Density_h"     value="1"/>
 	<Param name="Density_l"     value="0.001"/>
@@ -50,8 +50,9 @@
 
     </Model>
 <VTK/>
-<VTK Iterations="2"/> 
-<Solve Iterations="20" output="output/"> 
+<VTK Iterations="50"/> 
+<Solve Iterations="100" output="output/">
+	<Log Iterations="50"/>
 </Solve>
 </CLBConfig>
 

@@ -23,10 +23,10 @@
         
   </Geometry>
     <Model>
-	<Param name="Radius" 		value="5"/>
-	<Param name="CenterX" 		value="45"/>
-	<Param name="CenterY" 		value="12"/>
-	<Param name="CenterZ" 		value="25"/>
+	<Param name="Radius" 		value="0.001m"/>
+	<Param name="CenterX" 		value="0.003m"/>
+	<Param name="CenterY" 		value="0.0025m"/>
+	<Param name="CenterZ" 		value="0.007m"/>
 	<Param name="BubbleType" 	value="1"/>
 	<Param name="Density_h"     value="1"/>
 	<Param name="Density_l"     value="0.001"/>
