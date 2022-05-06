@@ -177,6 +177,7 @@ if (Options$RT) {
 }
 
 if (Options$thermo){
+	AddAction("TempToSteadyState", c("CopyDistributions"))
 	AddAction("Iteration", c("BaseIter", "PhaseIter","WallIter","TempIter"))
 	AddAction("Init"     , c("PhaseInit","WallInit", "WallIter","TempInit","BaseInit"))
 } else {

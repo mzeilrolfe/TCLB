@@ -485,7 +485,7 @@ CudaDeviceFunction void temp_iter_f(){
 
 
 	real_t myPhaseF = PhaseF(0,0);
-	real_t normPhaseF = (myPhaseF - PhaseField_l)/(PhaseField_h - PhaseField_l);
+	real_t normPhaseF = myPhaseF;
 	real_t rho = getRho();
 	real_t tau = calcTau_T(myPhaseF,rho); 
 	//thermal relaxation time
@@ -1751,9 +1751,8 @@ CudaDeviceFunction void BounceBack()
 	V = V(0,0);
 	real_t temp = gettemperature();
 	real_t mag = U*U + V*V;
-	f[0] = calcGamma_T(0, U, V, mag, temp);
 	for (i = 0 ; i < 9; i++){
-		f[i]=calcgammat();
+		f[i]=calcgamma_T(i, U, V, mag, temp);
 	}
 #endif
 	//Summing the difference in momentum before/after collision
